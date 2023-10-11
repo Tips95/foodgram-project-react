@@ -3,22 +3,23 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    """
-    Класс, представляющий роли пользователей.
-    """
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     email = models.EmailField(
+        max_length=200,
         unique=True
     )
     username = models.CharField(
+        'Логин',
         max_length=150,
         unique=True
     )
     first_name = models.CharField(
-        verbose_name='имя',
+        'имя',
         max_length=150,
     )
     last_name = models.CharField(
-        verbose_name='фамилия',
+        'фамилия',
         max_length=150,
     )
 
@@ -26,35 +27,21 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         ordering = ('id',)
+    
+    def __str__(self):
+        return self.username
 
 
 class Subscribe(models.Model):
-    subscriber = models.ForeignKey(
-        'User',
+    user = models.ForeignKey(
+        User,
         on_delete=models.CASCADE,
-        verbose_name='подписчик',
-        related_name='subscribers'
+        related_name='follower',
+        verbose_name='пользователь'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='автор',
-        related_name='authors',
+        related_name='following',
+        verbose_name='автор'
     )
-
-    class Meta:
-        verbose_name = 'подписка'
-        verbose_name_plural = 'подписки'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('subscriber', 'author'),
-                name='%(app_label)s_%(class)s_name_unique',
-            ),
-            models.CheckConstraint(
-                check=~models.Q(author=models.F('subscriber')),
-                name='%(app_label)s_%(class)s_self_sub',
-            ),
-        )
-
-    def __str__(self) -> str:
-        return f'{self.subscriber} -> {self.author}'
