@@ -118,18 +118,18 @@ class IngredientAmount(models.Model):
         return f'В рецепте {self.recipe.name} {self.count}{self.ingredient.measurement_unit} {self.ingredient.name}'
 
 
-class ShoopingCart(models.Model):
+class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='shooping_cart'
+        related_name='shopping_cart'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='корзина',
-        related_name='shooping_cart'
+        related_name='shopping_cart'
     )
 
     class Meta:

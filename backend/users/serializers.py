@@ -21,4 +21,3 @@ class UserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        
