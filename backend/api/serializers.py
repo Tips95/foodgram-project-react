@@ -51,6 +51,30 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = '__all__'
 
+    def validate(self, data):
+        ingredients_data = data.get('ingredients')
+        tags_data = data.get('tags')
+        valid_tags = []
+        valid_ingredients = []
+        if not tags_data:
+            raise serializers.ValidationError('Должен быть хотя бы 1 тег')
+        for tag in tags_data:
+            if tag in valid_tags:
+                raise serializers.ValidationError('Нельзя добавить один тег 2 раза')
+            valid_tags.append('tag')
+
+        if not ingredients_data:
+            raise serializers.ValidationError('должен быть хотя бы 1 ингредиент')
+        for ingredient in ingredients_data:
+            try:
+                Ingredient.objects.get(id=ingredient['id'])
+            except Exception:
+                raise serializers.ValidationError('Ингредиент не существует')
+            if ingredient in valid_ingredients:
+                raise serializers.ValidationError('Нельзя добавить один ингредиент 2 раза')
+            valid_ingredients.append('ingredients')
+        return data
+
     def ingredient_amount(self, ingregients, recipe):
         for ingredient in ingregients:
             id = ingredient['id']
@@ -71,9 +95,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
-        print(ingredients)
         tags = validated_data.pop('tags')
-        print(tags)
         instance = super().update(instance, validated_data)
         instance.tags.clear()
         instance.ingredients.clear()
@@ -81,6 +103,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         self.ingredient_amount(recipe=instance, ingregients=ingredients)
         instance.save()
         return instance
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return RecipeReadSerializer(instance, context=context).data
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -115,7 +142,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return user.shooping_cart.filter(recipe=obj).exists()
+        return user.shopping_cart.filter(recipe=obj).exists()
 
 
 class FavoriteRecipeSerializer(serializers.ModelSerializer):
@@ -146,3 +173,4 @@ class RecipeShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
+

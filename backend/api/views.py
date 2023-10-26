@@ -14,22 +14,26 @@ from .serializers import (TagSerializer,
                           RecipeReadSerializer,
                           RecipeShortSerializer,
                           )
+from .permissions import IsAuthorOrReadOnly
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import (AllowAny,
+                                        SAFE_METHODS)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (AllowAny,)
+    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    permission_classes = IsAuthorOrReadOnly,
     serializer_class = RecipeSerializer
 
     def perform_create(self, serializer):
-        print(self.request.user)
         serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
@@ -119,3 +123,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    pagination_class = None
