@@ -1,14 +1,18 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-zr+we^2*@fue0az9!yretm40s+l_u282jxhrdf4bw&$!_1zzb1'
+load_dotenv()
 
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-123')
 
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG') == 'True'
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(' ')
 
 
 INSTALLED_APPS = [
@@ -63,6 +67,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('POSTGRES_DB', 'foodgram'),
+#         'USER': os.getenv('POSTGRES_USER', 'foodgram_user'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'foodgram_password'),
+#         'HOST': os.getenv('DB_HOST', 'db'),
+#         'PORT': os.getenv('DB_PORT', 5432)
+#     }
+# }
+
 AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -82,24 +97,30 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-    ),
+    ],
+
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 6
+    'PAGE_SIZE': 6,
+
 }
 
 DJOSER = {
     'SERIALIZERS': {
-        'users': 'users.serializers.UserSerializer',
-        'current_user': 'users.serializers.UserSerializer',
-        },
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+    },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.AllowAny'],
         'user_list': ['rest_framework.permissions.AllowAny'],
     },
     'HIDE_USERS': False,
-    'LOGIN_FIELD': 'email'
+    "LOGIN_FIELD": "email"
 }
 
 LANGUAGE_CODE = 'en-us'

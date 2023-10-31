@@ -72,9 +72,8 @@ class Recipe(models.Model):
         verbose_name='тег',
         related_name='recipes',
     )
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.IntegerField(
         verbose_name='Время приготовления в минутах',
-        default=1,
         validators=(
             MinValueValidator(1, 'Минимум 1 минута'),
             MaxValueValidator(180, 'Максимум 3 часа'),
@@ -107,12 +106,6 @@ class IngredientAmount(models.Model):
         ordering = ('id',)
         verbose_name = 'Количество ингредиента'
         verbose_name_plural = 'Количество ингредиентов'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['recipe', 'ingredient'],
-                name='unique_count'
-            )
-        ]
 
     def __str__(self):
         return f'В рецепте {self.recipe.name} {self.count}{self.ingredient.measurement_unit} {self.ingredient.name}'
