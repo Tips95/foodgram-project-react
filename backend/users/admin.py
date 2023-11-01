@@ -7,19 +7,19 @@ from recipes.models import Ingredient
 class UserAdmin(admin.ModelAdmin):
     """Администрирование модели User."""
 
-    list_display = ['email', 'username', 'first_name', 'last_name']
+    list_display: list = ['email', 'username', 'first_name', 'last_name']
 
 
 @admin.register(Subscribe)
 class SubscribeAdmin(admin.ModelAdmin):
     """Администрирование модели Subscribe."""
 
-    list_display = ['user', 'author']
+    list_display: list = ['user', 'author']
 
 @admin.register(Ingredient)
 class IngredientsAdmin(admin.ModelAdmin):
     """Администрирование модели Ingredient."""
 
-    list_display = ["name", "measurement_unit"]
-    search_fields = ["name"]
-    list_filter = ["name"]
+    list_display: list[str] = ["name", "measurement_unit"]
+    search_fields: list[str] = ["name"]
+    list_filter: list[str] = ["name"]

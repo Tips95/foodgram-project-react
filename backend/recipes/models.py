@@ -16,7 +16,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        ordering: tuple = ('name',)
 
     def __str__(self):
         return self.name
@@ -39,9 +39,9 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        ordering: tuple = ('name',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -86,7 +86,7 @@ class Recipe(models.Model):
         )
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -111,11 +111,11 @@ class IngredientAmount(models.Model):
     )
 
     class Meta:
-        ordering = ('id',)
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
+        ordering: tuple = ('id',)
+        verbose_name: str = 'Количество ингредиента'
+        verbose_name_plural: str = 'Количество ингредиентов'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'В рецепте {self.recipe.name} {self.count}{self.ingredient.measurement_unit} {self.ingredient.name}'
 
 
@@ -138,7 +138,7 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
-        constraints = [
+        constraints: list = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
                 name='unique_cart'
@@ -166,9 +166,9 @@ class FavoriteRecipe(models.Model):
         )
 
     class Meta:
-        verbose_name = 'Избранное'
+        verbose_name: str = 'Избранное'
         verbose_name_plural = 'Избранное'
-        constraints = [models.UniqueConstraint(
+        constraints: list = [models.UniqueConstraint(
             fields=['user', 'recipe'],
             name='unique_favorite',)
         ]

@@ -27,11 +27,11 @@ class CustomUserViewSet(UserViewSet):
         methods=('POST', 'DELETE'),
         permission_classes=(IsAuthenticated,)
     )
-    def subscribe(self, request, id):
+    def subscribe(self, request, id) -> Response:
         """Добавление или удаление подписки на другого пользователя."""
         user = request.user
         model = Subscribe
-        author = get_object_or_404(User, id=id)
+        author: User = get_object_or_404(User, id=id)
         if request.method == 'POST':
             serializer = SubscribeCreateSerializer(author, data=request.data,
                                                    context={'request': request})

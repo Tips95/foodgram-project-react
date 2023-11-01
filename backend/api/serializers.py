@@ -17,7 +17,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields: str = '__all__'
 
 
 class Base64ImageField(serializers.ImageField):
@@ -26,7 +26,7 @@ class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
+            ext: str = format.split('/')[-1]
 
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
 
@@ -42,7 +42,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientAmount
-        fields = ('id', 'name', 'measurement_unit', 'amount',)
+        fields: tuple = ('id', 'name', 'measurement_unit', 'amount',)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -56,15 +56,15 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('name', 'text', 'cooking_time', 'tags', 'author',
-                  'ingredients', 'image',)
+        fields: tuple = ('name', 'text', 'cooking_time', 'tags', 'author',
+                         'ingredients', 'image',)
 
-    def validate(self, data):
+    def validate(self, data):# -> Any:
         """Проверка данных при создании или обновлении рецепта."""
         ingredients_data = data.get('ingredients')
         tags_data = data.get('tags')
-        valid_tags = []
-        valid_ingredients = []
+        valid_tags: list = []
+        valid_ingredients: list = []
         if not tags_data:
             raise serializers.ValidationError('Должен быть хотя бы 1 тег')
         for tag in tags_data:
@@ -76,8 +76,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('должен быть хотя бы 1 ингредиент')
         for ingredient in ingredients_data:
             try:
-                ing_id = Ingredient.objects.get(id=ingredient['ingredient']['id'])
-                print(ing_id)
+                Ingredient.objects.get(id=ingredient['ingredient']['id'])
             except Exception:
                 raise serializers.ValidationError('Ингредиент не существует')
             if ingredient in valid_ingredients:
@@ -88,8 +87,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def ingredient_amount(self, ingregients, recipe):
         """Создание связей между рецептом и ингредиентами."""
         for ingredient in ingregients:
-            id = ingredient['ingredient']['id']
-            amount = ingredient['amount']
+            id: list = ingredient['ingredient']['id']
+            amount: list = ingredient['amount']
             recipe.ingredients_list.create(
                 amount=amount,
                 recipe_id=recipe.id,
@@ -100,7 +99,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         """Создание нового рецепта."""
         ingredients = validated_data.pop('ingredients')
         tag = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
+        recipe: Recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tag)
         self.ingredient_amount(recipe=recipe, ingregients=ingredients)
         return recipe
@@ -120,7 +119,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """Преобразование модели Recipe в представление."""
         request = self.context.get('request')
-        context = {'request': request}
+        context: dict = {'request': request}
         return RecipeReadSerializer(instance, context=context).data
 
 
@@ -136,7 +135,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'text', 'cooking_time', 'tags', 'author',
+        fields: tuple = ('id', 'name', 'text', 'cooking_time', 'tags', 'author',
                   'ingredients', 'image', 'is_favorited', 'is_in_shopping_cart',)
 
     def get_is_favorited(self, obj):
@@ -172,7 +171,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingCart
-        fields = '__all__'
+        fields: str = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -180,7 +179,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields: str = '__all__'
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
@@ -188,7 +187,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscribe
-        fields = '__all__'
+        fields: str = '__all__'
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
@@ -196,4 +195,4 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields: tuple = ('id', 'name', 'image', 'cooking_time')

@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from django.db.models import Sum
 from recipes.models import (Tag,
@@ -7,7 +8,8 @@ from recipes.models import (Tag,
                             Ingredient,
                             FavoriteRecipe,
                             ShoppingCart,
-                            IngredientAmount)
+                            IngredientAmount,
+                            User)
 from rest_framework import viewsets
 from .serializers import (TagSerializer,
                           RecipeSerializer,
@@ -21,6 +23,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (AllowAny,
                                         SAFE_METHODS,
                                         IsAuthenticated)
+from .filters import IngredientFilter, RecipeFilter
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -28,7 +31,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (AllowAny,)
+    permission_classes: tuple = (AllowAny,)
     pagination_class = None
 
 
@@ -36,8 +39,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с рецептами."""
 
     queryset = Recipe.objects.all()
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes: tuple = (IsAuthorOrReadOnly,)
     serializer_class = RecipeSerializer
+    filter_backends: tuple = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
         """Создание нового рецепта."""
@@ -54,9 +59,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=('POST', 'DELETE'),
         permission_classes=(IsAuthenticated,)
     )
-    def favorite(self, request, pk):
+    def favorite(self, request, pk) -> Response:
         """Добавление или удаление рецепта в избранное."""
-        user = request.user
+        user: User = request.user
         model = FavoriteRecipe
         if request.method == 'POST':
             if model.objects.filter(user=user, recipe__id=pk).exists():
@@ -75,7 +80,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_201_CREATED
             )
         else:
-            recipe = get_object_or_404(Recipe, id=pk)
+            recipe: Recipe = get_object_or_404(Recipe, id=pk)
             favorite = model.objects.filter(user=user, recipe=recipe)
             if favorite.exists():
                 favorite.delete()
@@ -87,9 +92,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=('POST', 'DELETE'),
         permission_classes=(IsAuthenticated,)
     )
-    def shopping_cart(self, request, pk):
+    def shopping_cart(self, request, pk) -> Response:
         """Добавление или удаление рецепта в список покупок."""
-        user = request.user
+        user: User = request.user
         model = ShoppingCart
         if request.method == 'POST':
             if model.objects.filter(user=user, recipe__id=pk).exists():
@@ -108,7 +113,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_201_CREATED
             )
         else:
-            recipe = get_object_or_404(Recipe, id=pk)
+            recipe: Recipe = get_object_or_404(Recipe, id=pk)
             shopcart = model.objects.filter(user=user, recipe=recipe)
             if shopcart.exists():
                 shopcart.delete()
@@ -148,3 +153,5 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
+    filter_backends: tuple = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter

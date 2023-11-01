@@ -7,7 +7,7 @@ class User(AbstractUser):
     """Модель пользователя."""
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS: list = ['username', 'first_name', 'last_name']
     email = models.EmailField(
         max_length=200,
         unique=True
@@ -33,9 +33,9 @@ class User(AbstractUser):
     )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-        ordering = ('id',)
+        verbose_name: str = 'Пользователь'
+        verbose_name_plural: str = 'Пользователи'
+        ordering: tuple = ('id',)
 
     def __str__(self):
         return self.username

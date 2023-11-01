@@ -13,7 +13,7 @@ class CustomUserSerializer(UserSerializer):
 
     class Meta:
         model = User
-        fields = (
+        fields: tuple = (
             'id',
             'email',
             'username',
@@ -35,7 +35,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields: str = '__all__'
 
 
 class SubscribeCreateSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscribe
-        fields = (
+        fields: tuple = (
             'id',
             'email',
             'username',
