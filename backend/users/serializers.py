@@ -7,6 +7,8 @@ from api.serializers import RecipeShortSerializer
 
 
 class CustomUserSerializer(UserSerializer):
+    """Сериализатор пользователей с дополнительным полем подписки."""
+
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -21,6 +23,7 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
+        """Проверяет, подписан ли текущий пользователь на автора."""
         request = self.context.get('request').user
         if request.is_anonymous:
             return False
@@ -28,12 +31,16 @@ class CustomUserSerializer(UserSerializer):
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    """Сериализатор создания пользователей."""
+
     class Meta:
         model = User
         fields = '__all__'
 
 
 class SubscribeCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор создания и чтения подписок."""
+
     id = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
@@ -57,20 +64,23 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
             )
 
     def get_is_subscribed(self, obj):
-        print(obj)
+        """Проверяет, подписан ли текущий пользователь на автора."""
         request = self.context.get('request').user
         if request.is_anonymous:
             return False
         return Subscribe.objects.filter(author=obj, user=request).exists()
 
     def get_recipes(self, obj):
+        """Возвращает список рецептов автора."""
         queryset = obj.recipes.all()
         return RecipeShortSerializer(queryset, many=True).data
 
     def get_recipes_count(self, obj):
+        """Возвращает количество рецептов автора."""
         return obj.recipes.all().count()
 
     def validate(self, data):
+        """Проверка данных при создании подписки."""
         author = self.instance
         user = self.context.get('request').user
         if user == author:

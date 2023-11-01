@@ -24,6 +24,8 @@ from rest_framework.permissions import (AllowAny,
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для обработки запросов на получение тегов."""
+
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
@@ -31,14 +33,18 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """Вьюсет для работы с рецептами."""
+
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorOrReadOnly,)
     serializer_class = RecipeSerializer
 
     def perform_create(self, serializer):
+        """Создание нового рецепта."""
         serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
+        """Получение класса сериализатора в зависимости от метода запроса."""
         if self.request.method in SAFE_METHODS:
             return RecipeReadSerializer
         return RecipeSerializer
@@ -49,6 +55,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, pk):
+        """Добавление или удаление рецепта в избранное."""
         user = request.user
         model = FavoriteRecipe
         if request.method == 'POST':
@@ -81,6 +88,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def shopping_cart(self, request, pk):
+        """Добавление или удаление рецепта в список покупок."""
         user = request.user
         model = ShoppingCart
         if request.method == 'POST':
@@ -110,6 +118,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False,
             permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request, *kwargs):
+        """Скачивание списка покупок в формате текстового файла."""
         user = request.user
         ingredients = IngredientAmount.objects.filter(
             recipe__shopping_cart__user=user
@@ -134,6 +143,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для обработки запросов на получение ингредиентов."""
+
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None

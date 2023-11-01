@@ -4,6 +4,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Ingredient(models.Model):
+    """Модель ингредиентов."""
+
     name = models.CharField(
         max_length=200,
         verbose_name='Название'
@@ -21,6 +23,8 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
+    """Модель тегов."""
+
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -42,6 +46,8 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    """Модель рецептов."""
+
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -85,6 +91,8 @@ class Recipe(models.Model):
 
 
 class IngredientAmount(models.Model):
+    """Модель количества ингредиентов в рецептах."""
+
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -112,6 +120,8 @@ class IngredientAmount(models.Model):
 
 
 class ShoppingCart(models.Model):
+    """Модель списка покупок."""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -140,6 +150,8 @@ class ShoppingCart(models.Model):
 
 
 class FavoriteRecipe(models.Model):
+    """Модель избранных рецептов."""
+
     user = models.ForeignKey(
         User,
         verbose_name='Пользователь',

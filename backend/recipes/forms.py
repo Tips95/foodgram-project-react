@@ -3,6 +3,8 @@ from .models import Tag
 
 
 class TagForm(forms.ModelForm):
+    """Форма для создания и обновления тегов."""
+
     class Meta:
         model = Tag
         fields = ['name', 'color']

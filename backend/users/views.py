@@ -1,22 +1,26 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from djoser.views import UserViewSet
+from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+
+from djoser.views import UserViewSet
+
 from .serializers import UserSerializer, SubscribeCreateSerializer
 from .models import User, Subscribe
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 
 
 class CustomUserViewSet(UserViewSet):
+    """Вьюсет для работы с пользователями и подписками."""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get_permissions(self):
+        """Получение разрешений в зависимости от действия."""
         if self.action == "me":
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
-
 
     @action(
         detail=True,
@@ -24,6 +28,7 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
+        """Добавление или удаление подписки на другого пользователя."""
         user = request.user
         model = Subscribe
         author = get_object_or_404(User, id=id)
@@ -47,6 +52,7 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def subscriptions(self, request):
+        """Получение списка подписок текущего пользователя."""
         user = request.user
         queryset = User.objects.filter(
             following__user=user
