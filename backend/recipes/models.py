@@ -165,7 +165,7 @@ class FavoriteRecipe(models.Model):
         verbose_name='Рецепт',
         on_delete=models.CASCADE,
         related_name='favorite_recipe'
-        )
+    )
 
     class Meta:
         verbose_name: str = 'Избранное'
