@@ -21,7 +21,7 @@ class User(AbstractUser):
                 regex=r'^[\w.@+-]+\Z',
                 message='Имя пользователя содержит недопустимый символ'
             )
-            ],
+        ],
     )
     first_name = models.CharField(
         'имя',
