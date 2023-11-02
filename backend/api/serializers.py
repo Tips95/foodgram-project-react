@@ -38,7 +38,8 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = IngredientAmount
@@ -59,7 +60,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields: tuple = ('name', 'text', 'cooking_time', 'tags', 'author',
                          'ingredients', 'image',)
 
-    def validate(self, data):# -> Any:
+    def validate(self, data):
         """Проверка данных при создании или обновлении рецепта."""
         ingredients_data = data.get('ingredients')
         tags_data = data.get('tags')
@@ -69,18 +70,21 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Должен быть хотя бы 1 тег')
         for tag in tags_data:
             if tag in valid_tags:
-                raise serializers.ValidationError('Нельзя добавить один тег 2 раза')
+                raise serializers.ValidationError(
+                    'Нельзя добавить один тег 2 раза')
             valid_tags.append(tag)
 
         if not ingredients_data:
-            raise serializers.ValidationError('должен быть хотя бы 1 ингредиент')
+            raise serializers.ValidationError(
+                'должен быть хотя бы 1 ингредиент')
         for ingredient in ingredients_data:
             try:
                 Ingredient.objects.get(id=ingredient['ingredient']['id'])
             except Exception:
                 raise serializers.ValidationError('Ингредиент не существует')
             if ingredient in valid_ingredients:
-                raise serializers.ValidationError('Нельзя добавить один ингредиент 2 раза')
+                raise serializers.ValidationError(
+                    'Нельзя добавить один ингредиент 2 раза')
             valid_ingredients.append(ingredient)
         return data
 
@@ -135,8 +139,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields: tuple = ('id', 'name', 'text', 'cooking_time', 'tags', 'author',
-                  'ingredients', 'image', 'is_favorited', 'is_in_shopping_cart',)
+        fields: tuple = ('id', 'name', 'text', 'cooking_time',
+                         'tags', 'author',
+                         'ingredients', 'image', 'is_favorited',
+                         'is_in_shopping_cart',)
 
     def get_is_favorited(self, obj):
         """Проверка, добавлен ли рецепт в избранное."""

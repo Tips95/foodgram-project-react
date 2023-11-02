@@ -16,6 +16,7 @@ class SubscribeAdmin(admin.ModelAdmin):
 
     list_display: list = ['user', 'author']
 
+
 @admin.register(Ingredient)
 class IngredientsAdmin(admin.ModelAdmin):
     """Администрирование модели Ingredient."""

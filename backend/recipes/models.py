@@ -116,7 +116,9 @@ class IngredientAmount(models.Model):
         verbose_name_plural: str = 'Количество ингредиентов'
 
     def __str__(self) -> str:
-        return f'В рецепте {self.recipe.name} {self.count}{self.ingredient.measurement_unit} {self.ingredient.name}'
+        return (f'В рецепте {self.recipe.name} '
+                f'{self.count}{self.ingredient.measurement_unit} '
+                f'{self.ingredient.name}')
 
 
 class ShoppingCart(models.Model):

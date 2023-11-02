@@ -78,4 +78,3 @@ class Command(BaseCommand):
         """
         self.import_ingredient_from_file()
         self.import_tag()
-

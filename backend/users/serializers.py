@@ -84,7 +84,9 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
         author = self.instance
         user = self.context.get('request').user
         if user == author:
-            raise serializers.ValidationError('Нельзя подписаться на самого себя')
+            raise serializers.ValidationError('Нельзя подписаться '
+                                              'на самого себя')
         if Subscribe.objects.filter(author=author, user=user).exists():
-            raise serializers.ValidationError('Нельзя повторно подписаться на автора')
+            raise serializers.ValidationError('Нельзя повторно '
+                                              'подписаться на автора')
         return data

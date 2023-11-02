@@ -33,8 +33,9 @@ class CustomUserViewSet(UserViewSet):
         model = Subscribe
         author: User = get_object_or_404(User, id=id)
         if request.method == 'POST':
-            serializer = SubscribeCreateSerializer(author, data=request.data,
-                                                   context={'request': request})
+            serializer = SubscribeCreateSerializer(
+                author, data=request.data,
+                context={'request': request})
             serializer.is_valid(raise_exception=True)
             model.objects.create(
                 author=author, user=user
