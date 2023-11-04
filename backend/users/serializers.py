@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import SerializerMethodField
+from djoser.serializers import UserSerializer, UserCreateSerializer
 from users.models import User, Subscribe
-from djoser.serializers import (UserSerializer,
-                                UserCreateSerializer)
 from api.serializers import RecipeShortSerializer
 
 

@@ -1,28 +1,31 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
 from django.db.models import Sum
-from recipes.models import (Tag,
-                            Recipe,
-                            Ingredient,
-                            FavoriteRecipe,
-                            ShoppingCart,
-                            IngredientAmount,
-                            User)
-from rest_framework import viewsets
-from .serializers import (TagSerializer,
-                          RecipeSerializer,
-                          IngredientSerializer,
-                          RecipeReadSerializer,
-                          RecipeShortSerializer,
-                          )
-from .permissions import IsAuthorOrReadOnly
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import (AllowAny,
                                         SAFE_METHODS,
                                         IsAuthenticated)
+from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (
+    Tag,
+    Recipe,
+    Ingredient,
+    FavoriteRecipe,
+    ShoppingCart,
+    IngredientAmount,
+    User,
+)
+from .serializers import (
+    TagSerializer,
+    RecipeSerializer,
+    IngredientSerializer,
+    RecipeReadSerializer,
+    RecipeShortSerializer,
+)
+from .permissions import IsAuthorOrReadOnly
 from .filters import IngredientFilter, RecipeFilter
 
 
@@ -40,7 +43,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all()
     permission_classes: tuple = (IsAuthorOrReadOnly,)
-    serializer_class = RecipeSerializer
     filter_backends: tuple = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 

@@ -1,6 +1,8 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from colorfield.fields import ColorField
 from users.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Ingredient(models.Model):
@@ -29,7 +31,7 @@ class Tag(models.Model):
         verbose_name='Название',
         max_length=200,
     )
-    color = models.CharField(
+    color = ColorField(
         verbose_name='Цвет',
         max_length=7,
     )

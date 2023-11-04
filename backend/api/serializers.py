@@ -1,15 +1,18 @@
-from rest_framework import serializers
-from recipes.models import (Tag,
-                            Recipe,
-                            FavoriteRecipe,
-                            ShoppingCart,
-                            Ingredient,
-                            IngredientAmount
-                            )
-from users.models import (Subscribe)
-from users.serializers import UserSerializer
-import base64
 from django.core.files.base import ContentFile
+import base64
+from rest_framework import serializers
+
+from recipes.models import (
+    Tag,
+    Recipe,
+    FavoriteRecipe,
+    ShoppingCart,
+    Ingredient,
+    IngredientAmount,
+)
+
+from users.models import Subscribe
+from users.serializers import UserSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
