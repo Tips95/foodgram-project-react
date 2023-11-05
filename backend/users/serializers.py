@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import SerializerMethodField
 from djoser.serializers import UserSerializer, UserCreateSerializer
+
 from users.models import User, Subscribe
 from api.serializers import RecipeShortSerializer
 
@@ -40,7 +41,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 class SubscribeCreateSerializer(serializers.ModelSerializer):
     """Сериализатор создания и чтения подписок."""
 
-    id = serializers.ReadOnlyField()
+    read_only_field = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
     first_name = serializers.ReadOnlyField()
