@@ -17,7 +17,6 @@ services:
       - pg_data:/var/lib/postgresql/data/
 
   backend:
-    # image: tips95/foodgram_backend
     build:
       context: ./backend/
       dockerfile: Dockerfile
