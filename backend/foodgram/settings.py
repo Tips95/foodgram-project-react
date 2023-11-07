@@ -138,3 +138,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = ["https://foodgram-tips.ddns.net/", "http://84.201.178.123", "https://*.ddns.net"]
