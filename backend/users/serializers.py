@@ -41,7 +41,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 class SubscribeCreateSerializer(serializers.ModelSerializer):
     """Сериализатор создания и чтения подписок."""
 
-    read_only_field = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
     first_name = serializers.ReadOnlyField()

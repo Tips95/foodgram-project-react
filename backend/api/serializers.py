@@ -82,13 +82,15 @@ class RecipeSerializer(serializers.ModelSerializer):
                 'должен быть хотя бы 1 ингредиент')
         for ingredient in ingredients_data:
             try:
-                Ingredient.objects.get(id=ingredient['ingredient']['id'])
+                uniq_ing = Ingredient.objects.get(
+                    id=ingredient['ingredient']['id']
+                )
             except Exception:
                 raise serializers.ValidationError('Ингредиент не существует')
-            if ingredient in valid_ingredients:
+            if uniq_ing in valid_ingredients:
                 raise serializers.ValidationError(
                     'Нельзя добавить один ингредиент 2 раза')
-            valid_ingredients.append(ingredient)
+            valid_ingredients.append(uniq_ing)
         return data
 
     def ingredient_amount(self, ingregients, recipe):
