@@ -56,3 +56,7 @@ class Subscribe(models.Model):
         related_name='following',
         verbose_name='автор'
     )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
