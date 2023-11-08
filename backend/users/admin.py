@@ -16,12 +16,3 @@ class SubscribeAdmin(admin.ModelAdmin):
     """Администрирование модели Subscribe."""
 
     list_display: list = ['user', 'author']
-
-
-@admin.register(Ingredient)
-class IngredientsAdmin(admin.ModelAdmin):
-    """Администрирование модели Ingredient."""
-
-    list_display: list[str] = ["name", "measurement_unit"]
-    search_fields: list[str] = ["name"]
-    list_filter: list[str] = ["name"]
