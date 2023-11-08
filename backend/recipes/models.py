@@ -19,6 +19,8 @@ class Ingredient(models.Model):
 
     class Meta:
         ordering: tuple = ('name',)
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.name
@@ -42,6 +44,8 @@ class Tag(models.Model):
 
     class Meta:
         ordering: tuple = ('name',)
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self) -> str:
         return self.name
@@ -87,6 +91,10 @@ class Recipe(models.Model):
             MaxValueValidator(180, 'Максимум 3 часа'),
         )
     )
+
+    class Meta:
+        verbose_name: str = 'Рецепт'
+        verbose_name_plural: str = 'Рецепты'
 
     def __str__(self) -> str:
         return self.name
